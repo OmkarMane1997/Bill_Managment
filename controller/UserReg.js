@@ -98,7 +98,7 @@ const UserReg={
                   signed: true,
                   path : '/api/v1/refreshToken',
                   maxAge: 1 * 2 * 60 * 60 * 1000
-              })
+              });
                 return  res.status(StatusCodes.OK).json({ msg: " Login SuccessFull",accessToken,userRole}); 
             }else{
               return res.status(StatusCodes.BAD_REQUEST).json({ msg: "User Doesn't exists.." })
