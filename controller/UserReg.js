@@ -70,7 +70,7 @@ const UserReg={
         try {
           
           const {email,password} = req.body;
-        console.log(req.body)
+        // console.log(req.body)
         if (validator.isEmail(email)== false) {
             return res.status(StatusCodes.BAD_REQUEST).json({ msg: " Enter Only Valid Email" }); 
             }
@@ -81,7 +81,7 @@ const UserReg={
 
             let findUser = `SELECT * FROM user_master WHERE email='${email}' AND is_active = 1`;
             const result = await DBconnection(findUser)
-            console.log(result);
+            // console.log(result);
             // finding user in DB .
             if (result.length > 0) {
                 //  console.log(result[0].password)
@@ -122,6 +122,7 @@ const UserReg={
         try {
          
           const rfToken = req.body;
+        console.log(req.body);
           if(!rfToken.token)  {
             return res.status(StatusCodes.BAD_REQUEST).json({msg: "Session Expired , Login Again.."})
           }
@@ -134,11 +135,8 @@ const UserReg={
               const userId =decodeToken(rfToken.token) 
               // console.log(userId.id)
               const userRole = userId.role;
-              const accessToken = createAccessToken({id:userId.id,role:userId.role})
-              console.log('New Token to add in RTK State:-',accessToken, userId.role)
-             
-  
-              res.status(StatusCodes.OK).json({accessToken,userRole })
+              console.log('New Token to add in RTK State:-', userId.role);
+              res.status(StatusCodes.OK).json({userRole})
             }
            })
           } catch (err) {
