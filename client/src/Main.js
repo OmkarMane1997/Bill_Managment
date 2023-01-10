@@ -1,23 +1,20 @@
-import React, { useEffect,useMemo } from "react";
+import React, { useEffect } from "react";
 import Login from "./components/Login";
 import { toast, ToastContainer } from "react-toastify";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { userRole } from "./reducers/authReducers";
 import DashBoard from "./components/DashBoard";
 import Error from "./components/Error";
 import Menu from "./components/Menu";
-import AddProduct from './components/AddProduct';
+import AddProduct from "./components/AddProduct";
 import Profile from "./components/Profile";
 
 function Main() {
-  const dispatch = useDispatch();
   const loginToken = {
     token: localStorage.getItem("loginToken"),
   };
+
   const getVerified = async () => {
-   
     try {
       let result = await axios.post(
         `http://localhost:4000/api/v1/refreshToken`,
@@ -26,24 +23,16 @@ function Main() {
           headers: { Authorization: loginToken.token },
         }
       );
-      
-     
     } catch (err) {
       console.log(err.response.data.msg);
       toast.error(err.response.data.msg);
-      // navigation('/')
+      // window.location.href = "/";
     }
   };
 
-  let a = useMemo(() => {
-    if (loginToken ===! '') {
-    // console.log('loginToken:-',loginToken)
+  useEffect(() => {
     getVerified();
-      
-    }
-  }, [getVerified]);
-
-  
+  }, []);
 
   return (
     <div>

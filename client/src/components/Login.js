@@ -3,8 +3,7 @@ import { toast } from "react-toastify";
 import {useNavigate} from 'react-router-dom';
 import validator from 'validator';
 import axios from 'axios';
-import {useDispatch} from 'react-redux';
-import {userRole} from '../reducers/authReducers';
+
 function Login() {
     const URL = `http://localhost:4000/api/v1`;
 
@@ -14,7 +13,6 @@ function Login() {
   });
 
   const navigate =useNavigate();
-  const dispatch = useDispatch();
 
 
   const readData =(e)=>{
@@ -40,8 +38,7 @@ function Login() {
         localStorage.setItem("loginToken",result.data.accessToken)
         localStorage.setItem("role",result.data.userRole)
         console.log(result.data.accessToken);
-        console.log(result.data.userRole)
-         dispatch(userRole(result.data.userRole));
+        console.log(result.data.userRole);
          toast.success(result.data.msg);
          navigate('/DashBoard');
        } catch (err) {
