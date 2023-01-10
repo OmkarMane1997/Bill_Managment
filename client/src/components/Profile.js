@@ -1,67 +1,45 @@
 import React,{useEffect,useState} from "react";
 import axios from 'axios';
-import {useSelector,useDispatch} from 'react-redux';
-import {userLogin} from '../reducers/authReducers';
-import {useNavigate} from 'react-router-dom'
+// import {useDispatch} from 'react-redux';
+// import {userLogin} from '../reducers/authReducers';
+import {useNavigate} from 'react-router-dom';
 
 
 function Profile() {
+const [profileData, setProfileData] = useState([]);
+    const navigation = useNavigate();
+const loginToken = {
+  token: localStorage.getItem("loginToken"),
+};
+// console.log(loginToken);
 
-    const [profileData, setProfileData] = useState([]);
+const getProfile = async()=>{
+  try {
     
-
-    let data =   useSelector((state)=>{
-        return state;
+    let info = await axios.get(`http://localhost:4000/api/v1/profile`,  {
+      headers: { Authorization: loginToken.token },
     })
+    console.log(info.data.result)
+    setProfileData(info.data.result);
+  } catch (err) {
+    console.log(err.response.data.msg)
+    navigation('/');
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
-
-    const getProfileData=async()=>{
-        try {
-           
-            let token = await data.users.token;
-            // console.log(token)
-            const res= await axios.get(`http://localhost:4000/api/v1/profile`,{
-                headers:{ Authorization :token}
-             })
-             console.log(res.data.result)
-             await setProfileData(res.data.result)
-        } catch (err) {
-            console.log(err.response.data.msg)
-        }
+    if (err.response.data.msg === 'Token Required') {
+      navigation('/');
     }
+  }
+}
 
-    useEffect(() => {
-       
+useEffect(() => {
+  getProfile()
+}, []);
 
-        getProfileData()
-        
-    }, [data])
-    
+if (!profileData[0]) {
+  return <div className="container my-5 text-center"><h1 >Loading Please Wait</h1></div>;
+}
+// const {name,email,phone,role}= profileData[0];
 
-    if (!profileData[0]) {
-        return <div className="container my-5 text-center"><h1 >Loading Please Wait</h1></div>;
-    }
-
-
-
-    const {name,email,phone,role}= profileData[0];
-
-
-    const Logout = async()=>{
-        try {
-             let result = await axios.get('http://localhost:4000/api/v1/logout');
-             console.log(result); 
-             localStorage.clear();
-             dispatch(userLogin(''));
-        navigate('/');
-
-        } catch (err) {
-          console.log(err)
-        }
-    }
   return (
     <div className="container my-5 ">
       <div className="row">
@@ -71,25 +49,26 @@ function Profile() {
               <div className="text-center">
                 <h1>Profile</h1>
                 <hr className="mt-0" />
+                
               </div>
               <div className="d-flex justify-content-between">
                 <b>Name:-</b>
-                <p>{name}</p>
+                <p>{profileData[0].name}</p>
               </div>
               <div className="d-flex justify-content-between">
                 <b>Email:-</b>
-                <p>{email}</p>
+                <p>{profileData[0].email}</p>
               </div>
               <div className="d-flex justify-content-between">
                 <b>Phone:-</b>
-                <p>{phone}</p>
+                <p>{profileData[0].phone}</p>
               </div>
               <div className="d-flex justify-content-between">
                 <b>Role:-</b>
-                <p>{role==="1"?"User":"Admin"}</p>
+                <p>{profileData[0].role==="1"?"User":"Admin"}</p>
               </div>
               <div className="d-flex justify-content-center">
-                    <button className="btn btn-success" onClick={Logout}>Logout</button>
+                    <button className="btn btn-success" >Logout</button>
               </div>
             </div>
           </div>

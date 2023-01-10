@@ -1,15 +1,5 @@
-
-// import Menu from "./Menu";
-// import Profile from "./Profile";
-
 function DashBoard() {
-  return (
-    <div>
-      DashBoard
-      {/* <Menu userRole={'0'} />
-      <Profile /> */}
-    </div>
-  );
+  return <div>DashBoard</div>;
 }
 
 export default DashBoard;

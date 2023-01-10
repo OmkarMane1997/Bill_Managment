@@ -1,26 +1,39 @@
-import React from "react";
+import React, { useEffect,useState } from "react";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {useSelector,useDispatch} from 'react-redux';
-import {  userRole } from "../reducers/authReducers";
+import { useSelector, useDispatch } from "react-redux";
+import { userRole } from "../reducers/authReducers";
 
 function Menu() {
-  
   const navigate = useNavigate();
   const dispatch = useDispatch();
+const [role, setRole] = useState('');
 
-  let data =   useSelector((state)=>{
+  let data = useSelector((state) => {
     return state.users.role;
-})
-console.log(data)
+  });
+  console.log('Two',data)
+
+  // useEffect(() => {
+
+  //   if (data ===! ' ') {
+  // console.log('Omkarmane',data)
+  // setRole(data)
+
+  //   }
+
+  // }, [data]);
+
+
+
   const Logout = async () => {
     try {
       let result = await axios.get("http://localhost:4000/api/v1/logout");
-      console.log(result);
+      // console.log(result);
       localStorage.clear();
-      dispatch(userRole(' '));
-    
+      dispatch(userRole(" "));
+
       navigate("/");
     } catch (err) {
       console.log(err);
@@ -54,7 +67,7 @@ console.log(data)
                   <NavLink
                     className="nav-link active"
                     aria-current="page"
-                    to={"/DashBoard/AddProduct"}
+                    to={"/AddProduct"}
                   >
                     AddProduct
                   </NavLink>
@@ -63,7 +76,7 @@ console.log(data)
 
               {data === "0" ? (
                 <li className="nav-item">
-                  <NavLink className="nav-link" to={"/DashBoard/AddUser"}>
+                  <NavLink className="nav-link" to={"/AddUser"}>
                     Add User
                   </NavLink>
                 </li>
@@ -75,9 +88,9 @@ console.log(data)
                 </NavLink>
               </li>
 
-              {data === "0" ? (
+              {data === "0" || data === "1" ? (
                 <li className="nav-item">
-                  <NavLink className="nav-link" to={"/DashBoard/Profile"}>
+                  <NavLink className="nav-link" to={"/Profile"}>
                     Profile
                   </NavLink>
                 </li>
@@ -89,8 +102,6 @@ console.log(data)
                   </NavLink>
                 </li>
               ) : null}
-            </ul>
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 {data === "0" || data === "1" ? (
                   <NavLink
@@ -100,15 +111,7 @@ console.log(data)
                   >
                     Logout
                   </NavLink>
-                ) : (
-                  <NavLink
-                  className="nav-link active"
-                  aria-current="page"
-                  to={'/'}
-                >
-                  Login
-                </NavLink>
-                )}
+                ) : null}
               </li>
             </ul>
           </div>

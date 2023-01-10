@@ -38,11 +38,12 @@ function Login() {
          let result = await axios.post(`${URL}/login`,loginData);
         console.log(result.data)
         localStorage.setItem("loginToken",result.data.accessToken)
+        localStorage.setItem("role",result.data.userRole)
         console.log(result.data.accessToken);
         console.log(result.data.userRole)
          dispatch(userRole(result.data.userRole));
          toast.success(result.data.msg);
-         navigate('/Main');
+         navigate('/DashBoard');
        } catch (err) {
         console.log(err.response.data.msg);
         toast.error(err.response.data.msg)
