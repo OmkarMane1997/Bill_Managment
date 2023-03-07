@@ -1,51 +1,52 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import {useNavigate} from 'react-router-dom';
-import validator from 'validator';
-import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import validator from "validator";
+import axios from "axios";
 
 function Login() {
-    const URL = `http://localhost:4000/api/v1`;
+  const URL = `http://localhost:4000/api/v1`;
 
   const [loginData, setLoginData] = useState({
-    email:"",
-    password:""
+    email: "",
+    password: "",
   });
 
-  const navigate =useNavigate();
+  const navigate = useNavigate();
 
-
-  const readData =(e)=>{
-    const {name,value}= e.target;
-    setLoginData({...loginData,[name]:value})
-
-  }
+  const readData = (e) => {
+    const { name, value } = e.target;
+    setLoginData({ ...loginData, [name]: value });
+  };
   const submitHandler = async (e) => {
     e.preventDefault();
     // alert();
     if (validator.isEmail(loginData.email) === false) {
-        return toast.error("Enter valid Email")
-      }
-      if (validator.isStrongPassword(loginData.password)===false) {
-        return toast.error("Password should be combination of one uppercase , one lower case, one special char, one digit and min 8 , max 20")
-      }
-     
-       try { 
-        //  console.log("Data",loginData);
+      return toast.error("Enter valid Email");
+    }
+    if (validator.isStrongPassword(loginData.password) === false) {
+      return toast.error(
+        "Password should be combination of one uppercase , one lower case, one special char, one digit and min 8 , max 20"
+      );
+    }
 
-         let result = await axios.post(`${URL}/login`,loginData);
-        console.log(result.data)
-        localStorage.setItem("loginToken",result.data.accessToken)
-        localStorage.setItem("role",result.data.userRole)
-        console.log(result.data.accessToken);
-        console.log(result.data.userRole);
-         toast.success(result.data.msg);
-         navigate('/DashBoard');
-       } catch (err) {
-        console.log(err.response.data.msg);
-        toast.error(err.response.data.msg)
-       }
+    try {
+      //  console.log("Data",loginData);
+
+      let result = await axios.post(`${URL}/login`, loginData);
+      console.log(result.data);
+      localStorage.setItem("loginToken", result.data.accessToken);
+      localStorage.setItem("role", result.data.userRole);
+      console.log(result.data.accessToken);
+      console.log(result.data.userRole);
+      toast.success(result.data.msg);
+      navigate("/DashBoard");
+    } catch (err) {
+      console.log(err.response.data.msg);
+      toast.error(err.response.data.msg);
+    }
   };
+
   return (
     <section className="">
       <div className="container py-5 h-100">
@@ -87,10 +88,7 @@ function Login() {
               </div>
 
               <div className="d-flex justify-content-around align-items-center mb-4">
-                <button
-                  type="submit"
-                  className="btn btn-primary  btn-block"
-                >
+                <button type="submit" className="btn btn-primary  btn-block">
                   Sign in
                 </button>
               </div>

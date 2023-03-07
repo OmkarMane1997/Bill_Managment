@@ -1,21 +1,19 @@
 import React from "react";
-import { NavLink , useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
 function Menu() {
+  const navigation = useNavigate();
+  const userRole = {
+    Role: localStorage.getItem("role"),
+  };
 
-  const navigation = useNavigate()
-const userRole = {
-  Role: localStorage.getItem("role"),
-};
-
- const Logout = async () => {
+  const Logout = async () => {
     try {
-      let result = await axios.get("http://localhost:4000/api/v1/logout");
+      await axios.get("http://localhost:4000/api/v1/logout");
       // console.log(result);
       localStorage.clear();
-      navigation('/');
+      navigation("/");
     } catch (err) {
       console.log(err);
     }
@@ -23,7 +21,7 @@ const userRole = {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container">
+        <div className="container d-flex justify-content-end">
           <NavLink className="navbar-brand" to={"/DashBoard"}>
             Bill System
           </NavLink>
@@ -39,17 +37,13 @@ const userRole = {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div
-            className="collapse navbar-collapse d-flex justify-content-end"
+            className="collapse navbar-collapse "
             id="navbarSupportedContent"
           >
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               {userRole.Role === "0" || userRole.Role === "1" ? (
                 <li className="nav-item">
-                  <NavLink
-                    className="nav-link active"
-                    aria-current="page"
-                    to={"/AddProduct"}
-                  >
+                  <NavLink className="nav-link active" to={"/AddProduct"}>
                     AddProduct
                   </NavLink>
                 </li>
@@ -63,11 +57,11 @@ const userRole = {
                 </li>
               ) : null}
 
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <NavLink className="nav-link" to={"From"}>
                   Form
                 </NavLink>
-              </li>
+              </li> */}
 
               {userRole.Role === "0" || userRole.Role === "1" ? (
                 <li className="nav-item">
@@ -85,11 +79,7 @@ const userRole = {
               ) : null}
               <li className="nav-item">
                 {userRole.Role === "0" || userRole.Role === "1" ? (
-                  <NavLink
-                    className="nav-link active"
-                    aria-current="page"
-                    onClick={Logout}
-                  >
+                  <NavLink className="nav-link" onClick={Logout}>
                     Logout
                   </NavLink>
                 ) : null}

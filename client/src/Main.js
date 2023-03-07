@@ -1,39 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Login from "./components/Login";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
 import DashBoard from "./components/DashBoard";
 import Error from "./components/Error";
 import Menu from "./components/Menu";
 import AddProduct from "./components/AddProduct";
 import Profile from "./components/Profile";
-
+import RequireAuth from "./utlit/RequireAuth";
 function Main() {
-  const loginToken = {
-    token: localStorage.getItem("loginToken"),
-  };
-
-  const getVerified = async () => {
-    try {
-      let result = await axios.post(
-        `http://localhost:4000/api/v1/refreshToken`,
-        loginToken,
-        {
-          headers: { Authorization: loginToken.token },
-        }
-      );
-    } catch (err) {
-      console.log(err.response.data.msg);
-      toast.error(err.response.data.msg);
-      // window.location.href = "/";
-    }
-  };
-
-  useEffect(() => {
-    getVerified();
-  }, []);
-
   return (
     <div>
       <BrowserRouter>
@@ -41,9 +16,30 @@ function Main() {
         <Menu />
         <Routes>
           <Route path={"/"} element={<Login />} />
-          <Route path={"/DashBoard"} element={<DashBoard />} />
-          <Route path={"/AddProduct"} element={<AddProduct />} />
-          <Route path={"/Profile"} element={<Profile />} />
+          <Route
+            path={"/DashBoard"}
+            element={
+              <RequireAuth>
+                <DashBoard />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/AddProduct"}
+            element={
+              <RequireAuth>
+                <AddProduct />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/Profile"}
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
           <Route path={"/Error"} element={<Error />} />
         </Routes>
       </BrowserRouter>
