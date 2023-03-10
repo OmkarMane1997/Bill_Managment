@@ -57,12 +57,6 @@ function Menu() {
                 </li>
               ) : null}
 
-              {/* <li className="nav-item">
-                <NavLink className="nav-link" to={"From"}>
-                  Form
-                </NavLink>
-              </li> */}
-
               {userRole.Role === "0" || userRole.Role === "1" ? (
                 <li className="nav-item">
                   <NavLink className="nav-link" to={"/Profile"}>
@@ -70,13 +64,15 @@ function Menu() {
                   </NavLink>
                 </li>
               ) : null}
+
               {userRole.Role === "0" ? (
-                <li>
+                <li className="nav-item">
                   <NavLink className="nav-link" to={"Service"}>
                     Service
                   </NavLink>
                 </li>
               ) : null}
+
               <li className="nav-item">
                 {userRole.Role === "0" || userRole.Role === "1" ? (
                   <NavLink className="nav-link" onClick={Logout}>

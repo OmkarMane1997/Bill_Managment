@@ -203,6 +203,15 @@ const UserReg = {
         .json({ msg: err.message });
     }
   },
+  getAllUser: async (req, res) => {
+    res.status(StatusCodes.OK).json({ msg: "getAllUser" });
+  },
+  readUser: async (req, res) => {
+    res.status(StatusCodes.OK).json({ msg: "readUser" });
+  },
+  UpdateUser: async (req, res) => {
+    res.status(StatusCodes.OK).json({ msg: "deactivateUser" });
+  },
 };
 
 module.exports = UserReg;

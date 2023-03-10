@@ -1,3 +1,8 @@
-first login as admin:-
-admin add the user to Generate the bills
-admin add the Product
+1)login with admin done with protected routes done
+2)add product:- 
+      Product Name , product sub , rate , description
+3)user add:-
+       name,email phone, password, role.
+4)bill Generate:-
+5) Dashboard:-need report
+6) Service:-

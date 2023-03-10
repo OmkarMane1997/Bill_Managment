@@ -22,7 +22,7 @@ function RequireAuth({ children }) {
       setLogin(true);
       setLoading(false);
     } catch (err) {
-      toast.error(err.response.data.msg)
+      toast.error(err.response.data.msg);
       localStorage.clear();
       setLogin(false);
       setLoading(false);
@@ -34,7 +34,7 @@ function RequireAuth({ children }) {
     CheckUserLoin();
   }, []);
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="container">Loading...</div>;
   }
   return <div>{login ? children : <Login />}</div>;
 }
