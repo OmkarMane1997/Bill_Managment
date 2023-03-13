@@ -19,8 +19,10 @@ app.use(cookieParser(process.env.TOKEN_SECRET));
 app.use(cors());
 //  // route modules
 const UserReg = require("./route/UserReg");
+const Product = require("./route/Product");
 // primary Router
 app.use(`/api/v1`, UserReg);
+app.use(`/api/v1`, Product);
 // default route
 app.all(`*`, (req, res) => {
   res

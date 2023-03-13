@@ -1,8 +1,13 @@
 1)login with admin done with protected routes done
 2)add product:- 
-      Product Name , product sub , rate , description
+     * Product Name , product sub , rate , description (Fields in DB)+
+       * Api create Working.+
+
 3)user add:-
-       name,email phone, password, role.
+       * name,email phone, password, role (Fields in DB). +
+       * Api create done.+
+       * Frontend Penning -
+
 4)bill Generate:-
 5) Dashboard:-need report
 6) Service:-

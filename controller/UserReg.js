@@ -18,8 +18,10 @@ const UserReg = {
       //  where check the email is in DB or not.
 
       // Validation of Name
-      if (validator.isLength(name, { min: 2 }) == false) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ msg: "" });
+      if (validator.isAlpha(name, "en-US", { ignore: " " }) == false) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ msg: " Enter Only Valid Character " });
       }
       // Validation of Email
       if (validator.isEmail(email) == false) {
@@ -204,13 +206,96 @@ const UserReg = {
     }
   },
   getAllUser: async (req, res) => {
-    res.status(StatusCodes.OK).json({ msg: "getAllUser" });
+    try {
+      let getAllData = `Select id,name, email, phone, role from user_master WHERE is_active=1`;
+      let result = await DBconnection(getAllData);
+      // console.log(result);
+      let length = result.length;
+      res.status(StatusCodes.OK).json({ result, length });
+    } catch (err) {
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ msg: err.message });
+    }
   },
   readUser: async (req, res) => {
-    res.status(StatusCodes.OK).json({ msg: "readUser" });
+    try {
+      let id = req.params.id;
+      console.log("id", id);
+      let findData = `SELECT id,name,email,phone,role,status FROM user_master WHERE id='${id}' AND  is_active=1`;
+      // console.log(findData)
+      let exitsID = await DBconnection(findData);
+      // console.log(exitsID.length)
+      if (exitsID == 0) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ msg: " User Id not Found" });
+      } else {
+        // console.log('data',exitsID)
+        return res.status(StatusCodes.OK).json({ exitsID });
+      }
+    } catch (err) {
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ msg: err.message });
+    }
   },
   UpdateUser: async (req, res) => {
-    res.status(StatusCodes.OK).json({ msg: "deactivateUser" });
+    let id = req.params.id;
+    const { name, phone, password, role, status } = req.body;
+    const date = new Date();
+    let Modified_date = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .split("T")[0];
+    if (validator.isAlpha(name, "en-US", { ignore: " " }) == false) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: " Enter Only Valid Character " });
+    }
+
+    if (validator.isMobilePhone(phone) == false) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: " Enter Only Valid Mobile" });
+    }
+    if (
+      validator.isStrongPassword(password, {
+        minLength: 8,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+      }) == false
+    ) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: `minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1`,
+      });
+    }
+
+    if (validator.isLength(role, { min: 1 }) === false) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: ` Enter Role of User` });
+    }
+    let findData = `SELECT * FROM user_master WHERE id='${id}'`;
+    // console.log(findData)
+    let exitsID = await DBconnection(findData);
+
+    if (exitsID.length == 0) {
+      return res
+        .status(StatusCodes.OK)
+        .json({ msg: "Unable to Update Data, Provide id doesn't exists", id });
+    } else {
+      // Update Query
+      let UpdateQuery = `UPDATE user_master SET name="${name}",phone="${phone}",role="${role}",status="${status}",modified_date="${Modified_date}" WHERE id="${id}"`;
+      // console.log(UpdateQuery);
+      let result = await DBconnection(UpdateQuery);
+      return res
+        .status(StatusCodes.OK)
+        .json({ msg: "Data Update Successfully", id });
+    }
   },
 };
 
