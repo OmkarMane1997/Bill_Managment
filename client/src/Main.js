@@ -8,6 +8,9 @@ import Menu from "./components/Menu";
 import AddProduct from "./components/AddProduct";
 import Profile from "./components/Profile";
 import RequireAuth from "./utlit/RequireAuth";
+import AddUser from "./components/users/AddUser";
+import UserList from "./components/users/UserList";
+import UpdateUser from "./components/users/UpdateUser";
 function Main() {
   return (
     <div>
@@ -29,6 +32,30 @@ function Main() {
             element={
               <RequireAuth>
                 <AddProduct />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/AddUser"}
+            element={
+              <RequireAuth>
+                <AddUser />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/UserList"}
+            element={
+              <RequireAuth>
+                <UserList />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/UpdateUser/:id"}
+            element={
+              <RequireAuth>
+                <UpdateUser />
               </RequireAuth>
             }
           />

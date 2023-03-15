@@ -242,7 +242,7 @@ const UserReg = {
   },
   UpdateUser: async (req, res) => {
     let id = req.params.id;
-    const { name, phone, password, role, status } = req.body;
+    const { name, phone, role } = req.body;
     const date = new Date();
     let Modified_date = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000
@@ -260,19 +260,7 @@ const UserReg = {
         .status(StatusCodes.BAD_REQUEST)
         .json({ msg: " Enter Only Valid Mobile" });
     }
-    if (
-      validator.isStrongPassword(password, {
-        minLength: 8,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-      }) == false
-    ) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        msg: `minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1`,
-      });
-    }
+    
 
     if (validator.isLength(role, { min: 1 }) === false) {
       return res
@@ -288,9 +276,9 @@ const UserReg = {
         .status(StatusCodes.OK)
         .json({ msg: "Unable to Update Data, Provide id doesn't exists", id });
     } else {
-      // Update Query
-      let UpdateQuery = `UPDATE user_master SET name="${name}",phone="${phone}",role="${role}",status="${status}",modified_date="${Modified_date}" WHERE id="${id}"`;
-      // console.log(UpdateQuery);
+      // Update Query ,status="${status}"
+      let UpdateQuery = `UPDATE user_master SET name="${name}",phone="${phone}",role="${role}",modified_date="${Modified_date}" WHERE id="${id}"`;
+      console.log(UpdateQuery);
       let result = await DBconnection(UpdateQuery);
       return res
         .status(StatusCodes.OK)
