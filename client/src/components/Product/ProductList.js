@@ -1,61 +1,63 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Table from "../../datatable/Table";
+import axios from "axios";
 import { API_MainURL } from "../../APi/Api";
 import { loginToken } from "../../APi/Api";
+import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
-function UserList() {
-  const [userData, setUserData] = useState({});
+import Table from "../../datatable/Table";
+function ProductList() {
+  const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
-  let TableName = "User List";
-  const getData = async () => {
+
+  const getProducts = async () => {
     try {
-      let getResult = await axios.get(`${API_MainURL}/GetAllUser`, {
+      let resultApi = await axios.get(`${API_MainURL}/GetAllProduct`, {
         headers: { Authorization: loginToken.token },
       });
-      setUserData(getResult.data.result);
-      // console.log(getResult.data.result);
+      setProducts(resultApi.data.result);
       setLoading(false);
     } catch (err) {
-      // console.log(err.response);
       setLoading(false);
+
+      toast.error(err.response.data.msg);
     }
   };
+
   const columns = [
     {
-      name: "name",
-      label: "Name",
+      name: "productName",
+      label: "Product Name",
       options: {
         filter: true,
         sort: true,
       },
     },
     {
-      name: "email",
-      label: "Email ID",
+      name: "productSubName",
+      label: "Product Sub Name",
       options: {
         filter: false,
         sort: false,
       },
     },
     {
-      name: "phone",
-      label: "Phone Number",
+      name: "rate",
+      label: "Rate",
       options: {
         filter: false,
         sort: false,
       },
     },
     {
-      name: "role",
-      label: "User Role",
+      name: "status",
+      label: "Status",
       options: {
         filter: true,
         sort: true,
-        customBodyRender: (value, tableMeta, updateValue) => {
-          const role = tableMeta.rowData[3];
-          return <>{role === "0" ? "Administrator" : "Normal User"}</>;
-        },
+        // customBodyRender: (value, tableMeta, updateValue) => {
+        //   const role = tableMeta.rowData[3];
+        //   return <>{role === "0" ? "Administrator" : "Normal User"}</>;
+        // },
       },
     },
     {
@@ -69,7 +71,7 @@ function UserList() {
 
           return (
             <div>
-              <NavLink to={`/UpdateUser/${id}`} className="btn btn-warning">
+              <NavLink to={`/UpdateProduct/${id}`} className="btn btn-warning">
                 Edit
               </NavLink>
             </div>
@@ -79,29 +81,23 @@ function UserList() {
     },
   ];
 
-  
   useEffect(() => {
-    getData();
+    getProducts();
   }, []);
-
   if (loading) {
     return (
       <div className="container mt-5 text-center">
-        <h3>User List Table is Loading Please Wait...</h3>
+        <h3>Product List Table is Loading Please Wait...</h3>
       </div>
     );
   }
 
+  const TableName = "Product List";
   return (
     <div className="container mt-5">
-      <Table
-        data={userData}
-        columns={columns}
-        TableName={TableName}
-        
-      />
+      <Table data={products} columns={columns} TableName={TableName} />
     </div>
   );
 }
 
-export default UserList;
+export default ProductList;

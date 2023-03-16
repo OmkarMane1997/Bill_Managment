@@ -71,7 +71,7 @@ const Product = {
     try {
       let getAllData = `Select id,productName, productSubName, rate, description,status from product_master WHERE is_active=1`;
       let result = await DBconnection(getAllData);
-      console.log(result);
+      // console.log(result);
       let length = result.length;
       res.status(StatusCodes.OK).json({ result, length });
     } catch (err) {
@@ -83,11 +83,11 @@ const Product = {
   },
   SingleProduct: async (req, res) => {
     let id = req.params.id;
-    console.log("id", id);
+    // console.log("id", id);
     let findData = `SELECT id,productName, productSubName, rate, description, status FROM product_master WHERE id='${id}' AND  is_active=1`;
-    console.log(findData);
+    // console.log(findData);
     let exitsID = await DBconnection(findData);
-    console.log(exitsID);
+    // console.log(exitsID);
     if (exitsID == 0) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -103,6 +103,7 @@ const Product = {
       let id = req.params.id;
       const { productName, productSubName, rate, description, status } =
         req.body;
+      // console.log(typeof String(rate));
 
       if (validator.isAlpha(productName, "en-US", { ignore: " " }) == false) {
         return res
@@ -119,7 +120,8 @@ const Product = {
           .json({ msg: " Enter Only Character Product Sub Name " });
       }
 
-      if (validator.isNumeric(rate) == false) {
+      let patternRate = /^[0-9]+(\.[0-9]{1,2})?$/g;
+      if (validator.matches(String(rate), patternRate) === false) {
         return res
           .status(StatusCodes.BAD_REQUEST)
           .json({ msg: " Enter Only Numeric Product Rate " });
@@ -133,7 +135,6 @@ const Product = {
           .json({ msg: " Enter Only Character Description " });
       }
 
-      // console.log(req.body);
       const date = new Date();
       let date2 = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
         .toISOString()
@@ -144,23 +145,19 @@ const Product = {
       let exitsID = await DBconnection(findData);
 
       if (exitsID.length == 0) {
-        return res
-          .status(StatusCodes.OK)
-          .json({
-            msg: "Unable to Update Data, Provide id doesn't exists",
-            id,
-          });
+        return res.status(StatusCodes.OK).json({
+          msg: "Unable to Update Data, Provide id doesn't exists",
+          id,
+        });
       } else {
         // Update Query productName, productSubName, rate, description, status
-        let UpdateQuery = `UPDATE product_master SET productName="${productName}",productSubName="${productSubName}",rate="${rate}",description="${description}",description="${description}",modified_date="${date2}" WHERE id="${id}"`;
-        console.log(UpdateQuery);
+        let UpdateQuery = `UPDATE product_master SET productName="${productName}",productSubName="${productSubName}",rate="${rate}",description="${description}",status="${status}",modified_date="${date2}" WHERE id="${id}"`;
+        // console.log(UpdateQuery);
         let result = await DBconnection(UpdateQuery);
         return res
           .status(StatusCodes.OK)
           .json({ msg: "Data Update Successfully", id });
       }
-
-      res.status(StatusCodes.OK).json({ msg: "Product Add Successfully" });
     } catch (err) {
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)

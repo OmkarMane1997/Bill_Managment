@@ -15,10 +15,10 @@ function Profile() {
       let info = await axios.get(`http://localhost:4000/api/v1/profile`, {
         headers: { Authorization: loginToken.token },
       });
-      console.log(info.data.result);
+      // console.log(info.data.result);
       setProfileData(info.data.result);
     } catch (err) {
-      console.log(err.response.data.msg);
+      // console.log(err.response.data.msg);
       navigation("/");
 
       if (err.response.data.msg === "Token Required") {

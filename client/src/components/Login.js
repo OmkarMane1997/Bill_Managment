@@ -34,15 +34,15 @@ function Login() {
       //  console.log("Data",loginData);
 
       let result = await axios.post(`${URL}/login`, loginData);
-      console.log(result.data);
+      // console.log(result.data);
       localStorage.setItem("loginToken", result.data.accessToken);
       localStorage.setItem("role", result.data.userRole);
-      console.log(result.data.accessToken);
-      console.log(result.data.userRole);
+      // console.log(result.data.accessToken);
+      // console.log(result.data.userRole);
       toast.success(result.data.msg);
       navigate("/DashBoard");
     } catch (err) {
-      console.log(err.response.data.msg);
+      // console.log(err.response.data.msg);
       toast.error(err.response.data.msg);
     }
   };

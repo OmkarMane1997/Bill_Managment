@@ -11,14 +11,14 @@ function RequireAuth({ children }) {
 
   const CheckUserLoin = async () => {
     let token = localStorage.getItem("loginToken");
-    console.log("first");
+    // console.log("first");
     let accessToken = {
       token,
     };
 
     try {
       let result = await axios.post(`${API_MainURL}/refreshToken`, accessToken);
-      console.log("first", result.data);
+      // console.log("first", result.data);
       setLogin(true);
       setLoading(false);
     } catch (err) {

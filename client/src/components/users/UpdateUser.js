@@ -54,7 +54,7 @@ function UpdateUser() {
         return toast.error("Enter Only Valid Email");
       }
 
-      if (validator.isMobilePhone(user.phone) === false) {
+      if (validator.isMobilePhone(String(user.phone)) === false) {
         return toast.error("Enter Only Valid Mobile");
       }
       // PassWord Validation and Return Password Score.
@@ -74,9 +74,11 @@ function UpdateUser() {
       console.log(ApiResult.data.msg);
 
       toast.success(ApiResult.data.msg);
+      navigate("/UserList");
       //reset from
     } catch (err) {
       toast.error(err);
+      console.log(err);
     }
   };
   if (loading) {

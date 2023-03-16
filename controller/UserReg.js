@@ -221,7 +221,7 @@ const UserReg = {
   readUser: async (req, res) => {
     try {
       let id = req.params.id;
-      console.log("id", id);
+      // console.log("id", id);
       let findData = `SELECT id,name,email,phone,role,status FROM user_master WHERE id='${id}' AND  is_active=1`;
       // console.log(findData)
       let exitsID = await DBconnection(findData);
@@ -255,12 +255,11 @@ const UserReg = {
         .json({ msg: " Enter Only Valid Character " });
     }
 
-    if (validator.isMobilePhone(phone) == false) {
+    if (validator.isMobilePhone(String(phone)) == false) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ msg: " Enter Only Valid Mobile" });
     }
-    
 
     if (validator.isLength(role, { min: 1 }) === false) {
       return res

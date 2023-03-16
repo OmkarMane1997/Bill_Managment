@@ -1,13 +1,21 @@
 import React from "react";
 import MUIDataTable from "mui-datatables";
 function Table(props) {
+  const options = {
+    filter: true,
+    print: true,
+    viewColumns: false,
+    searchOpen: false,
+    searchPlaceholder: " Search User",
+    selectableRowsHideCheckboxes: true,
+  };
   return (
     <div>
       <MUIDataTable
         title={props.TableName}
-        data={props.userData}
+        data={props.data}
         columns={props.columns}
-        options={props.options}
+        options={options}
       />
     </div>
   );

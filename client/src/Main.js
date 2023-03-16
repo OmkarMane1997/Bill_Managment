@@ -5,12 +5,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashBoard from "./components/DashBoard";
 import Error from "./components/Error";
 import Menu from "./components/Menu";
-import AddProduct from "./components/AddProduct";
 import Profile from "./components/Profile";
 import RequireAuth from "./utlit/RequireAuth";
 import AddUser from "./components/users/AddUser";
 import UserList from "./components/users/UserList";
 import UpdateUser from "./components/users/UpdateUser";
+import AddProduct from "./components/Product/AddProduct";
+import ProductList from "./components/Product/ProductList";
+import UpdateProduct from "./components/Product/UpdateProduct";
 function Main() {
   return (
     <div>
@@ -32,6 +34,22 @@ function Main() {
             element={
               <RequireAuth>
                 <AddProduct />
+              </RequireAuth>
+            }
+          />
+           <Route
+            path={"/ProductList"}
+            element={
+              <RequireAuth>
+                <ProductList />
+              </RequireAuth>
+            }
+          />
+            <Route
+            path={"/UpdateProduct/:id"}
+            element={
+              <RequireAuth>
+                <UpdateProduct />
               </RequireAuth>
             }
           />
