@@ -164,6 +164,19 @@ const Product = {
         .json({ msg: err.message });
     }
   },
+  ProductInfo: async (req, res) => {
+    try {
+      let getAllData = `Select id ,  productName from product_master WHERE is_active=1 AND status="Active"  ORDER BY id ASC`;
+      let result = await DBconnection(getAllData);
+      // console.log(result);
+      let length = result.length;
+      res.status(StatusCodes.OK).json({ result, length });
+    } catch (err) {
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ msg: err.message });
+    }
+  },
 };
 
 module.exports = Product;

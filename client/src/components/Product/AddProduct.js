@@ -129,7 +129,7 @@ function AddProduct() {
                         Description
                       </label>
                       <textarea
-                        class="form-control"
+                        className="form-control"
                         id="description"
                         name="description"
                         rows="3"

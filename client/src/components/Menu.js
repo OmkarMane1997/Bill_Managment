@@ -67,8 +67,8 @@ function Menu() {
 
               {userRole.Role === "0" ? (
                 <li className="nav-item">
-                  <NavLink className="nav-link" to={"Service"}>
-                    Service
+                  <NavLink className="nav-link" to={"/AddBill"}>
+                    Bill
                   </NavLink>
                 </li>
               ) : null}

@@ -159,7 +159,7 @@ const UserReg = {
   refreshToken: async (req, res) => {
     try {
       const rfToken = req.body;
-      console.log(rfToken);
+      // console.log(rfToken);
 
       if (!rfToken.token) {
         return res
@@ -176,7 +176,7 @@ const UserReg = {
         }
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ msg: err.message });
@@ -196,7 +196,7 @@ const UserReg = {
       let id = req.user.id;
       let findUser = `SELECT id,name,email,phone,role,created_date FROM user_master WHERE id='${id}' AND is_active = 1`;
       let result = await DBconnection(findUser);
-      console.log(result);
+      // console.log(result);
       res.status(StatusCodes.OK).json({ result });
       //  res.status(StatusCodes.OK).json({ msg: "Profile Successful" })
     } catch (err) {

@@ -13,6 +13,7 @@ import UpdateUser from "./components/users/UpdateUser";
 import AddProduct from "./components/Product/AddProduct";
 import ProductList from "./components/Product/ProductList";
 import UpdateProduct from "./components/Product/UpdateProduct";
+import AddBill from "./components/BillGenrate/AddBill";
 function Main() {
   return (
     <div>
@@ -82,6 +83,14 @@ function Main() {
             element={
               <RequireAuth>
                 <Profile />
+              </RequireAuth>
+            }
+          />
+           <Route
+            path={"/AddBill"}
+            element={
+              <RequireAuth>
+                <AddBill />
               </RequireAuth>
             }
           />
