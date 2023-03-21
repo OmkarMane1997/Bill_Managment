@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { formattedDate, formattedTime } from "../../APi/CommonCode";
 import { API_MainURL, loginToken } from "../../APi/Api";
 import axios from "axios";
-
+import validator from "validator";
+import { toast } from "react-toastify";
+import Delete from "../../assest/image/Delete.png";
+// import Edit from "../../assest/image/Edit.png";
+// import Save from "../../assest/image/Save.png";
 function AddBill() {
   const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
   const [productId, setProductId] = useState(0);
+  const [selectedLabel, setSelectedLabel] = useState("");
   const [productRate, setProductRate] = useState(0);
-  // const [quantity, setQuantity] = useState(1);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [addToList, setAddToList] = useState([]);
 
+  const [addToList, setAddToList] = useState([]);
+  const inputRef = useRef(null);
   //  get all products id and product name fetching from API
   const getAllProduct = async () => {
     try {
@@ -20,7 +25,7 @@ function AddBill() {
       });
       setProducts(ResultApi.data.result);
       setLoading(false);
-      console.log(ResultApi.data.result);
+      // console.log(ResultApi.data.result);
     } catch (err) {
       setLoading(false);
       console.log(err.response.data.msg);
@@ -31,7 +36,6 @@ function AddBill() {
     const { value } = e.target;
     let total = productRate * value;
     setTotalAmount(total);
-    console.log(total);
   };
 
   //  On change Product fetching product rate
@@ -43,10 +47,77 @@ function AddBill() {
         headers: { Authorization: loginToken.token },
       });
       setProductRate(ResultApi.data.exitsID[0].rate);
-      // onChangeQuantity(e)
+      setSelectedLabel(e.target.options[e.target.selectedIndex].label);
+      inputRef.current.focus();
+      inputRef.current.value = "";
     } catch (err) {
       console.log(err.response.data.msg);
     }
+  };
+
+  // add to table
+  const addData = (e) => {
+    e.preventDefault();
+    //  validation part
+    if (productId === 0 || productId === "") {
+      return toast.error("Selected Product");
+    }
+    const inputValue = inputRef.current.value;
+    if (validator.isNumeric(inputValue) === false) {
+      return toast.error("Enter Only Numeric value ");
+    }
+    //  to generate Unique id for delete
+    function generateUniqueId() {
+      // const timestamp = Date.now();
+      const random = Math.floor(Math.random() * 10000);
+      return `${random}`;
+    }
+    // collection all data of one row
+    let data = {
+      id: generateUniqueId(),
+      PId: productId,
+      pName: selectedLabel,
+      PRate: productRate,
+      PQuantity: inputValue,
+      PTotalAmount: totalAmount,
+    };
+
+    // console.log("all combined", data);
+    // find the data id already add or nor if present then send msg otherwise add data into array.
+
+    let findItem = addToList.find((item) => item.PId === productId);
+    if (findItem) {
+      // console.log("all ready add this value ");
+      return toast.warning("All Ready Add This Product");
+    } else {
+      setAddToList([...addToList, data]);
+    }
+
+    // reset function call here to reset the data after insert data
+    
+    resetData(e);
+    //
+    // console.log("Add to list table :-", addToList);
+  };
+  // reset
+  const resetData = (e) => {
+    e.preventDefault();
+    setProductId("");
+    setProductRate(0);
+    setTotalAmount(0);
+    inputRef.current.value = "";
+  };
+
+  // remove form list
+
+  const removeAddToListItem = (event, param) => {
+    event.preventDefault();
+    console.log("index", param);
+    setAddToList((oldValues) => {
+      return oldValues.filter((item) => item.id !== param);
+    });
+
+    console.log(addToList);
   };
 
   useEffect(() => {
@@ -71,11 +142,11 @@ function AddBill() {
           <div className="card-header">
             <div className="d-flex justify-content-between">
               <div>
-                <label htmlFor="">Date :-</label>
+                <label htmlFor="" className="mt-2">
+                  Date :-
+                </label>
                 <span> {formattedDate}</span>
                 <br />
-                <label htmlFor="">Date :-</label>
-                <span> {formattedTime}</span>
               </div>
               <div>
                 <h5 className="mt-2">
@@ -83,14 +154,17 @@ function AddBill() {
                 </h5>
               </div>
               <div>
-                <label htmlFor="">Invoice No :- </label>
+                <label htmlFor="" className="mt-2">
+                  Date :-
+                </label>
+                <span> {formattedTime}</span>
               </div>
             </div>
           </div>
           <div className="card-body">
-            <form action="#" autoComplete="off">
+            <form autoComplete="off">
               <div className="row">
-                <div className="col-xxl-4 col-xl-4  col-md-4 col-sm-4 col-12">
+                <div className="col-xxl-4 col-xl-4  col-md-4 col-sm-6 col-12">
                   <div className="form-outline mb-3">
                     <label className="form-label" htmlFor="Customer Name">
                       Customer Name
@@ -106,7 +180,7 @@ function AddBill() {
                     />
                   </div>
                 </div>
-                <div className="col-xxl-4 col-xl-4  col-md-4 col-sm-4 col-12">
+                <div className="col-xxl-4 col-xl-4  col-md-4 col-sm-6 col-12">
                   <div className="form-outline mb-3">
                     <label className="form-label" htmlFor="CustomerPhoneNo">
                       Customer Phone No
@@ -124,7 +198,7 @@ function AddBill() {
                 </div>
               </div>
               <div className="row">
-                <div className="col-sm-3">
+                <div className="col-xxl-3 col-xl-3  col-md-3 col-sm-6 col-12">
                   <label className="form-label" htmlFor="Product Name">
                     Product Name
                   </label>
@@ -133,6 +207,7 @@ function AddBill() {
                     id="productId"
                     name="productId"
                     onChange={onChangeSelected}
+                    value={productId}
                   >
                     <option value="">Select the Product</option>
 
@@ -145,7 +220,7 @@ function AddBill() {
                     })}
                   </select>
                 </div>
-                <div className="col-sm-3">
+                <div className="col-xxl-3 col-xl-3  col-md-3 col-sm-6 col-12">
                   <label className="form-label" htmlFor=" Product Rate">
                     Product Rate
                   </label>
@@ -159,7 +234,7 @@ function AddBill() {
                     readOnly
                   />
                 </div>
-                <div className="col-sm-3">
+                <div className="col-xxl-3 col-xl-3  col-md-3 col-sm-6 col-12">
                   <label className="form-label" htmlFor="Quantity">
                     Quantity
                   </label>
@@ -170,10 +245,11 @@ function AddBill() {
                     placeholder="Enter Quantity"
                     className="form-control "
                     min={1}
+                    ref={inputRef}
                     onChange={onChangeQuantity}
                   />
                 </div>
-                <div className="col-sm-3">
+                <div className="col-xxl-3 col-xl-3  col-md-3 col-sm-6 col-12">
                   <label className="form-label" htmlFor=" Total Amount">
                     Total Amount
                   </label>
@@ -186,6 +262,76 @@ function AddBill() {
                     value={totalAmount}
                     readOnly
                   />
+                </div>
+              </div>
+              <div className="row">
+                <div className=" offset-md-10 col-xxl-3 col-xl-3  col-md-3 col-sm-6 col-12 my-3">
+                  <button className="btn btn-success mx-3" onClick={addData}>
+                    Add
+                  </button>
+                  <button className="btn btn-warning mx-3" onClick={resetData}>
+                    Reset
+                  </button>
+                </div>
+              </div>
+
+              <div className="row">
+                <div>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Product Name</th>
+                        <th> Rate</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {addToList.map((item, index) => {
+                        return (
+                          <tr key={index}>
+                            <th>{item.pName}</th>
+                            <td>{item.PRate} RS</td>
+                            <td>{item.PQuantity}</td>
+                            <td>{item.PTotalAmount} RS</td>
+                            <td>
+                              <button
+                                className="btn btn-danger"
+                                onClick={(event) =>
+                                  removeAddToListItem(event, item.id)
+                                }
+                              >
+                                <img
+                                  src={Delete}
+                                  alt="Delete"
+                                  style={{ width: "15px" }}
+                                />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <hr />
+              <div className="d-flex justify-content-between">
+                <div className=" h4">Total Quantity:- 10 Qty</div>
+                <div className=" h4">Total Amount :- 10 rs</div>
+              </div>
+              <br />
+              <br />
+              <div className="row">
+                <div className="col-xxl-4 col-xl-4  col-md-4 col-sm-6 col-12">
+                  a
+                </div>
+                <div className="col-xxl-4 col-xl-4  col-md-4 col-sm-6 col-12">
+                  a
+                </div>
+                <div className="col-xxl-4 col-xl-4  col-md-4 col-sm-6 col-12">
+                  a
                 </div>
               </div>
             </form>
