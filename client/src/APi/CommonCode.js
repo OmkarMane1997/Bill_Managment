@@ -1,4 +1,4 @@
-// Date and Time Common code  
+// Date and Time Common code
 const TodayDate = new Date();
 const dateOptions = {
   year: "numeric",
