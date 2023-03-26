@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { formattedDate, formattedTime } from "../../APi/CommonCode";
 import Select from "react-select";
 import axios from "axios";
-
+import validator from "validator";
 import { API_MainURL, loginToken } from "../../APi/Api";
 import Delete from "../../assest/image/Delete.png";
 function AddBill() {
   const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
-  // const [totalAmount, setTotalAmount] = useState("0");
-  // const [productRate, setProductRate] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState(0);
   const [inputFields, setInputFields] = useState([
     {
       ProductId: "",
@@ -46,7 +46,7 @@ function AddBill() {
       {
         ProductId: "",
         productRate: "",
-        Quantity: "",
+        Quantity: "0",
         totalAmount: "",
       },
     ]);
@@ -57,27 +57,30 @@ function AddBill() {
     rows.splice(index, 1);
     setInputFields(rows);
   };
+  // calculation for QYT and Total
+  function calculateTotalQuantityAndAmount(inputFields) {
+    const totalQuantity = inputFields
+      .map((item) => parseInt(item.Quantity))
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+    const totalAmount = inputFields
+      .map((item) => parseInt(item.totalAmount))
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    return { totalQuantity, totalAmount };
+  }
 
   const handleChange = async (index, event) => {
-
-
-
-
-
-
-
-
-
-    
     if (event.value === undefined) {
       const { name, value } = event.target;
 
       const list = [...inputFields];
       list[index][name] = value;
-
       list[index]["totalAmount"] = inputFields[index].productRate * value;
-
       setInputFields(list);
+      const { totalQuantity, totalAmount } =
+        calculateTotalQuantityAndAmount(inputFields);
+      setTotalQuantity(totalQuantity);
+      setTotalAmount(totalAmount);
     } else {
       try {
         let ResultApi = await axios.get(
@@ -92,8 +95,11 @@ function AddBill() {
         list[index]["ProductId"] = event.value;
         list[index]["productRate"] = ResultApi.data.exitsID[0].rate;
         list[index]["totalAmount"] = inputFields[index].productRate * myInput;
-
         setInputFields(list);
+        const { totalQuantity, totalAmount } =
+          calculateTotalQuantityAndAmount(inputFields);
+        setTotalQuantity(totalQuantity);
+        setTotalAmount(totalAmount);
       } catch (err) {
         console.log(err.response.data.msg);
       }
@@ -221,6 +227,7 @@ function AddBill() {
                           id={`Quantity-${index}`}
                           className="form-control"
                           placeholder="Quantity"
+                          min={1}
                         />
                       </div>
                       <div className="col">
@@ -271,6 +278,14 @@ function AddBill() {
                 </button>
               </div>
             </div>
+
+            <div className="d-flex justify-content-between my-3">
+              <div className="h5">
+                Total Quantity:- {totalQuantity}
+              </div>
+              <div className="h5">TotalAmount:- {totalAmount}</div>
+            </div>
+            <hr />
           </form>
         </div>
       </div>
